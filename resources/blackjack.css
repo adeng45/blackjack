@@ -1,0 +1,10 @@
+body {
+    text-align: center;
+    background-color: green;
+}
+
+:is(.house-cards, .self-cards) img {
+    width: 125px;
+    height: 175px
+}
+
