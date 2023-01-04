@@ -1,11 +1,42 @@
+html {
+    height: 100%;
+    overflow: hidden;
+}
+
 body {
     text-align: center;
     background-color: green;
+    height: 100%;
 }
 
-:is(.house-cards, .self-cards) img {
+#house-cards img, #self-cards img {
     width: 125px;
-    height: 175px
+    height: 175px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
+#house-cards, #self-cards {
+    padding: 19px 10px 15px 10px;
+    background-color: gray;
+    border-color: white;
+    border-width: 50px;
+    border-radius: 16px;
+}
 
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.house, .self {
+    width: fit-content;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* .buttons {
+    margin-top: 70px;
+} */

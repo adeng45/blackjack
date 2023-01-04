@@ -1,6 +1,7 @@
 const deck = buildDeck();
 const playerHand = [];
 const houseHand = [];
+var isOver = false;
 
 window.onload = function() {
 
@@ -21,6 +22,7 @@ function newGame() {
     houseHand.length = 0;
 
     document.getElementById("result").innerHTML = "";
+    isOver = false;
     
     shuffleDeck();
 
@@ -30,6 +32,7 @@ function newGame() {
     addCard(houseHand);
     addCard(houseHand);
 
+    renderHands(true);
 
 }
 
@@ -91,6 +94,7 @@ function evalHand(hand, isMax, isBest) {
             if (value == 'A') {
                 if (isMax || isBest) {
                     sum += 11;
+                    numAces += 1;
                 }
                 else {
                     sum += 1;
@@ -128,7 +132,7 @@ function isBust() {
 function renderHands(isOver) {
 
     // House hand
-    let hand = document.getElementsByClassName("house-cards")[0];
+    let hand = document.getElementById("house-cards");
     hand.innerHTML = "";
 
     var cardImg;
@@ -160,7 +164,7 @@ function renderHands(isOver) {
     }
 
     // The player's hand
-    hand = document.getElementsByClassName("self-cards")[0];
+    hand = document.getElementById("self-cards");
     hand.innerHTML = ""; 
     
     for (let i = 0; i < playerHand.length; i++) {
@@ -172,6 +176,10 @@ function renderHands(isOver) {
 }
 
 function draw() {
+
+    if (isOver) {
+        return;
+    }
 
     addCard(playerHand);
     renderHands(true);
@@ -264,6 +272,7 @@ function endGame() {
     }
 
     document.getElementById("result").innerHTML = msg;
+    isOver = true;
 
 }
 
