@@ -6,7 +6,6 @@ var isOver = false;
 window.onload = function() {
 
     newGame();
-    renderHands(true);
     
     document.getElementById("draw").addEventListener("click", draw);
     document.getElementById("play").addEventListener("click", play);
@@ -28,12 +27,7 @@ function newGame() {
     shuffleDeck();
 
     addCard(playerHand);
-    addCard(playerHand);
 
-    addCard(houseHand);
-    addCard(houseHand);
-
-    renderHands(true);
 
 }
 
@@ -79,7 +73,36 @@ function refresh() {
 
 function addCard(hand) {
 
-    hand.push(deck.pop());
+    let c = deck.pop();
+    hand.push(c);
+
+    var card;
+    var front;
+    var back;
+
+    card = document.createElement("div");
+    card.className = "card";
+
+    front = document.createElement("img");
+    front.src = "cards/back.png";
+    front.className = "front"
+
+    back = document.createElement("img");
+    back.src = "cards/" + c + ".png";
+    back.className = "back";
+
+    card.append(front);
+    card.append(back);
+
+    if (hand === playerHand) {
+        document.getElementById("self-cards").append(card);
+    }
+
+    else {
+        document.getElementById("house-cards").append(card);
+    }
+
+    setTimeout(() => card.classList.toggle(is_flipped), 1000);
 
 }
 
@@ -183,7 +206,6 @@ function draw() {
     }
 
     addCard(playerHand);
-    renderHands(true);
 
     console.log(evalHand(playerHand, false, false));
     console.log(isBust());
@@ -206,8 +228,6 @@ function endGame() {
         houseScore = evalHand(houseHand, true, true);
     }
     
-    renderHands(false);
-
     var msg;
     let playerScore = evalHand(playerHand, true, true);
 
@@ -279,6 +299,7 @@ function endGame() {
     isOver = true;
 
 }
+
 
 
 
