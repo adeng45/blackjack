@@ -1,12 +1,11 @@
 html {
     height: 100%;
-    overflow: hidden;
+    background-color: rgb(22, 112, 0);
 }
 
 body {
     text-align: center;
-    background-color: green;
-    height: 100%;
+    min-height: 100%;
 }
 
 #house-cards img, #self-cards img {
@@ -18,9 +17,7 @@ body {
 
 #house-cards, #self-cards {
     padding: 19px 10px 15px 10px;
-    background-color: gray;
-    border-color: white;
-    border-width: 50px;
+    border: solid white 2px;
     border-radius: 16px;
 }
 
@@ -37,6 +34,25 @@ body {
     margin-right: auto;
 }
 
-/* .buttons {
-    margin-top: 70px;
-} */
+.buttons {
+    width: 20%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+}
+
+.buttons button {
+    height: 50px;
+    width: 70px;    
+    border-radius: 16px;
+    border: none;
+    padding-right: 8px;
+    padding-bottom: 3px;
+    font-size: 30px;
+}
+
+.buttons button:hover {
+    cursor: pointer;
+    
+}
+

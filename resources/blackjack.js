@@ -10,6 +10,7 @@ window.onload = function() {
     
     document.getElementById("draw").addEventListener("click", draw);
     document.getElementById("play").addEventListener("click", play);
+    document.getElementById("reset").addEventListener("click", newGame);
 
 }
 
@@ -89,7 +90,7 @@ function evalHand(hand, isMax, isBest) {
     
     for (let i = 0; i < hand.length; i++) {
 
-        let value = hand[i][0];
+        let value = hand[i].split('_')[0];
         if (isNaN(value)) {
             if (value == 'A') {
                 if (isMax || isBest) {
@@ -184,6 +185,9 @@ function draw() {
     addCard(playerHand);
     renderHands(true);
 
+    console.log(evalHand(playerHand, false, false));
+    console.log(isBust());
+
     if (isBust()) {
         endGame();
     }
@@ -275,6 +279,8 @@ function endGame() {
     isOver = true;
 
 }
+
+
 
 
 
