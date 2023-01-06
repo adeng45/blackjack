@@ -1,34 +1,48 @@
 const deck = buildDeck();
 const playerHand = [];
 const houseHand = [];
+var hidden;
+
 var isOver = false;
 
 window.onload = function() {
-
-    newGame();
     
+    newGame();
     document.getElementById("draw").addEventListener("click", draw);
     document.getElementById("play").addEventListener("click", play);
     document.getElementById("reset").addEventListener("click", newGame);
 
 }
 
-function newGame() {
+async function newGame() {
 
     deck.push(...playerHand);
     deck.push(...houseHand);
 
+    document.getElementById('self-cards').innerHTML = "";
+    document.getElementById('house-cards').innerHTML = "";
     playerHand.length = 0;
     houseHand.length = 0;
 
-    document.getElementById("result").innerHTML = "";
+    // document.getElementById("result").innerHTML = "";
     isOver = false;
     
     shuffleDeck();
 
-    addCard(playerHand);
+    let c1 = addCard(playerHand);
+    let c2 = addCard(playerHand);
+    hidden = addCard(houseHand);
+    let c3 = addCard(houseHand);
 
+    await delay(1000);
+    flipCard(c1);
+    flipCard(c2);
+    flipCard(c3);
 
+}
+
+function delay(pause) {
+    return new Promise(res => setTimeout(res, pause));
 }
 
 function buildDeck() {
@@ -102,7 +116,13 @@ function addCard(hand) {
         document.getElementById("house-cards").append(card);
     }
 
-    setTimeout(() => card.classList.toggle(is_flipped), 1000);
+    return card;
+
+}
+
+function flipCard(card, pause) {
+
+    card.classList.toggle("is-flipped");
 
 }
 
@@ -199,18 +219,18 @@ function renderHands(isOver) {
 
 }
 
-function draw() {
+async function draw() {
 
     if (isOver) {
         return;
     }
 
-    addCard(playerHand);
-
-    console.log(evalHand(playerHand, false, false));
-    console.log(isBust());
+    card = addCard(playerHand);
+    await delay(250);
+    flipCard(card);
 
     if (isBust()) {
+        await delay(1750);
         endGame();
     }
 
@@ -220,23 +240,27 @@ function play() {
     endGame();
 }
 
-function endGame() {
+async function endGame() {
 
     let houseScore = evalHand(houseHand, true, true);
+    let card;
     while (houseScore < 17) {
-        addCard(houseHand);
+        card = addCard(houseHand);
+        await delay(100);
+        flipCard(card);
+        await delay(200);
         houseScore = evalHand(houseHand, true, true);
     }
     
-    var msg;
+    var result;
     let playerScore = evalHand(playerHand, true, true);
 
     if (playerScore > 21) {
-        msg = 'You LOSE!';
+        result = 'L';
     }
 
     else if (houseScore > 21) {
-        msg = 'You WIN!';
+        result = 'W';
     }
 
     else if (playerScore == houseScore) {
@@ -247,13 +271,13 @@ function endGame() {
                 
                 if (houseHand.length == 2) {
 
-                    msg = 'TIE!';
+                    result = 'T';
 
                 }
 
                 else {
 
-                    msg = 'You WIN!';
+                    result = 'W';
 
                 }
 
@@ -263,13 +287,13 @@ function endGame() {
 
                 if (houseHand.length == 2) {
 
-                    msg = 'You LOSE!';
+                    result = 'L';
 
                 }
 
                 else {
 
-                    msg = 'TIE!';
+                    result = 'W';
 
                 }
 
@@ -278,24 +302,27 @@ function endGame() {
         }
 
         else {
-            msg = 'TIE!';
+            result = 'T';
         }
         
     }
 
     else if (playerScore > houseScore) {
 
-        msg = 'You WIN!';
+        result = 'W';
 
     }
 
     else {
 
-        msg = 'YOU LOSE!';
+        result = 'L';
 
     }
 
-    document.getElementById("result").innerHTML = msg;
+    await delay(1000);
+    flipCard(hidden);
+
+    // document.getElementById("result").innerHTML = result;
     isOver = true;
 
 }
