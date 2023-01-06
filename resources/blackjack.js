@@ -8,9 +8,9 @@ var isOver = false;
 window.onload = function() {
     
     newGame();
+    document.getElementById("reset").addEventListener("click", newGame);
     document.getElementById("draw").addEventListener("click", draw);
     document.getElementById("play").addEventListener("click", play);
-    document.getElementById("reset").addEventListener("click", newGame);
 
 }
 
@@ -19,13 +19,14 @@ async function newGame() {
     deck.push(...playerHand);
     deck.push(...houseHand);
 
-    document.getElementById('self-cards').innerHTML = "";
-    document.getElementById('house-cards').innerHTML = "";
+    document.getElementById("self-cards").innerHTML = "";
+    document.getElementById("house-cards").innerHTML = "";
+    document.getElementById("draw").disabled = false;
+    document.getElementById("play").disabled = false;
     playerHand.length = 0;
     houseHand.length = 0;
 
     // document.getElementById("result").innerHTML = "";
-    isOver = false;
     
     shuffleDeck();
 
@@ -221,10 +222,7 @@ function renderHands(isOver) {
 
 async function draw() {
 
-    if (isOver) {
-        return;
-    }
-
+    document.getElementById("draw").disabled = true;
     card = addCard(playerHand);
     await delay(250);
     flipCard(card);
@@ -233,14 +231,23 @@ async function draw() {
         await delay(1750);
         endGame();
     }
+    
+    else {
+        document.getElementById("draw").disabled = false;
+    }
 
 }
 
 function play() {
+
     endGame();
+
 }
 
 async function endGame() {
+
+    document.getElementById("draw").disabled = true;
+    document.getElementById("play").disabled = true;
 
     let houseScore = evalHand(houseHand, true, true);
     let card;
@@ -323,7 +330,6 @@ async function endGame() {
     flipCard(hidden);
 
     // document.getElementById("result").innerHTML = result;
-    isOver = true;
 
 }
 
