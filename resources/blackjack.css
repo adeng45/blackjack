@@ -7,6 +7,28 @@ body {
     min-height: 100%;
 }
 
+.symbol {
+    height: 80px;
+    width: 120px;
+    margin: 0 auto;
+    transition: transform 0.25s cubic-bezier(0.87, 1.52, 0.86, 1.77);
+}
+
+.symbol.scale {
+    transform: scale(0);
+}
+
+.win, .lose, .tie {
+    position: absolute;
+    height: 80px;
+    width: 120px;
+    display: none;
+}
+
+.win.show, .tie.show, .lose.show {
+    display: block;
+}
+
 #house-cards, #self-cards {
     border: solid white 2px;
     border-radius: 16px;

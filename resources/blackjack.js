@@ -1,11 +1,12 @@
 const deck = buildDeck();
 const playerHand = [];
 const houseHand = [];
+
 var hidden;
 
 var isOver = false;
 
-window.onload = function() {
+window.onload = async function() {
     
     newGame();
     document.getElementById("reset").addEventListener("click", newGame);
@@ -16,18 +17,21 @@ window.onload = function() {
 
 async function newGame() {
 
+    lock();
+
     deck.push(...playerHand);
     deck.push(...houseHand);
 
     document.getElementById("self-cards").innerHTML = "";
     document.getElementById("house-cards").innerHTML = "";
-    document.getElementById("draw").disabled = false;
-    document.getElementById("play").disabled = false;
     playerHand.length = 0;
     houseHand.length = 0;
-
-    // document.getElementById("result").innerHTML = "";
     
+    document.getElementsByClassName("win")[0].classList.remove("show");
+    document.getElementsByClassName("tie")[0].classList.remove("show");
+    document.getElementsByClassName("lose")[0].classList.remove("show");
+    document.getElementsByClassName("symbol")[0].classList.add("scale");
+
     shuffleDeck();
 
     let c1 = addCard(playerHand);
@@ -35,10 +39,14 @@ async function newGame() {
     hidden = addCard(houseHand);
     let c3 = addCard(houseHand);
 
+
     await delay(1000);
     flipCard(c1);
     flipCard(c2);
     flipCard(c3);
+
+    await delay(750);
+    unlock();
 
 }
 
@@ -220,20 +228,35 @@ function renderHands(isOver) {
 
 }
 
+function lock() {
+    document.getElementById("draw").disabled = true;    
+    document.getElementById("play").disabled = true;
+    document.getElementById("reset").disabled = true;
+}
+
+function unlock() {
+    document.getElementById("draw").disabled = false;    
+    document.getElementById("play").disabled = false;
+    document.getElementById("reset").disabled = false;
+}
+
 async function draw() {
 
-    document.getElementById("draw").disabled = true;
+    lock();
+
     card = addCard(playerHand);
     await delay(250);
     flipCard(card);
+    await delay(750);
+
 
     if (isBust()) {
-        await delay(1750);
+        await delay(750);
         endGame();
     }
     
     else {
-        document.getElementById("draw").disabled = false;
+        unlock();    
     }
 
 }
@@ -246,28 +269,29 @@ function play() {
 
 async function endGame() {
 
-    document.getElementById("draw").disabled = true;
-    document.getElementById("play").disabled = true;
+    lock();
 
     let houseScore = evalHand(houseHand, true, true);
     let card;
+    let wait = true;
     while (houseScore < 17) {
+        wait = false;
         card = addCard(houseHand);
-        await delay(100);
+        await delay(300);
         flipCard(card);
-        await delay(200);
+        await delay(1000);
         houseScore = evalHand(houseHand, true, true);
     }
     
-    var result;
+    let result;
     let playerScore = evalHand(playerHand, true, true);
 
     if (playerScore > 21) {
-        result = 'L';
+        result = "lose";
     }
 
     else if (houseScore > 21) {
-        result = 'W';
+        result = "win";
     }
 
     else if (playerScore == houseScore) {
@@ -278,13 +302,13 @@ async function endGame() {
                 
                 if (houseHand.length == 2) {
 
-                    result = 'T';
+                    result = "tie";
 
                 }
 
                 else {
 
-                    result = 'W';
+                    result = "win";
 
                 }
 
@@ -294,13 +318,13 @@ async function endGame() {
 
                 if (houseHand.length == 2) {
 
-                    result = 'L';
+                    result = "lose";
 
                 }
 
                 else {
 
-                    result = 'W';
+                    result = "win";
 
                 }
 
@@ -309,27 +333,37 @@ async function endGame() {
         }
 
         else {
-            result = 'T';
+            result = "tie";
         }
         
     }
 
     else if (playerScore > houseScore) {
 
-        result = 'W';
+        result = "win";
 
     }
 
     else {
 
-        result = 'L';
+        result = "lose";
 
     }
 
-    await delay(1000);
+    if (wait) {
+        await delay(1000);
+    }
+
+    else {
+        await delay(250);
+    }
+
     flipCard(hidden);
 
-    // document.getElementById("result").innerHTML = result;
+    await delay(1500);
+    document.getElementById("reset").disabled = false;
+    document.getElementsByClassName("symbol")[0].classList.toggle("scale");
+    document.getElementsByClassName(result)[0].classList.toggle("show");
 
 }
 
