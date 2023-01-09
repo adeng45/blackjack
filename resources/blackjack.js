@@ -6,7 +6,7 @@ var hidden;
 
 var isOver = false;
 
-window.onload = async function() {
+window.onload = function() {
     
     newGame();
     document.getElementById("reset").addEventListener("click", newGame);
@@ -15,22 +15,24 @@ window.onload = async function() {
 
 }
 
+// Game initialization.
 async function newGame() {
 
     lock();
 
+    // Deck receives all the cards.
     deck.push(...playerHand);
     deck.push(...houseHand);
-
-    document.getElementById("self-cards").innerHTML = "";
-    document.getElementById("house-cards").innerHTML = "";
     playerHand.length = 0;
     houseHand.length = 0;
-    
-    document.getElementsByClassName("win")[0].classList.remove("show");
-    document.getElementsByClassName("tie")[0].classList.remove("show");
-    document.getElementsByClassName("lose")[0].classList.remove("show");
-    document.getElementsByClassName("symbol")[0].classList.add("scale");
+
+    // Refresh the stage.
+    document.getElementById("self-cards").innerHTML = "";
+    document.getElementById("house-cards").innerHTML = "";
+    document.querySelector(".win").classList.remove("show");
+    document.querySelector(".tie").classList.remove("show");
+    document.querySelector(".lose").classList.remove("show");
+    document.querySelector(".symbol-container").classList.add("scale");
 
     shuffleDeck();
 
@@ -50,10 +52,12 @@ async function newGame() {
 
 }
 
+// A gimmick to pause code execution.
 function delay(pause) {
     return new Promise(res => setTimeout(res, pause));
 }
 
+// Constructs the deck. Done once through page history.
 function buildDeck() {
 
     let deck = [];
@@ -71,6 +75,7 @@ function buildDeck() {
 
 }
 
+// Shuffles the deck.
 function shuffleDeck() {
 
     for (let i = 0; i < deck.length; i++) {
@@ -84,16 +89,7 @@ function shuffleDeck() {
 
 }
 
-function refresh() {
-    
-    playerHand.forEach( () => deck.push(item) );
-    houseHand.forEach( () => deck.push(item) );
-
-    playerHand.length = 0;
-    houseHand.length = 0;
-
-}
-
+// Adds a card to the player's hand in the DOM and the playerHand variable.
 function addCard(hand) {
 
     let c = deck.pop();
@@ -107,12 +103,12 @@ function addCard(hand) {
     card.className = "card";
 
     front = document.createElement("img");
-    front.src = "cards/back.png";
-    front.className = "front"
+    front.src = "images/cards/back.png";
+    front.className = "card-front"
 
     back = document.createElement("img");
-    back.src = "cards/" + c + ".png";
-    back.className = "back";
+    back.src = "images/cards/" + c + ".png";
+    back.className = "card-back";
 
     card.append(front);
     card.append(back);
@@ -129,12 +125,16 @@ function addCard(hand) {
 
 }
 
+// "Flips" the card in the DOM.
 function flipCard(card, pause) {
 
     card.classList.toggle("is-flipped");
 
 }
 
+// Evaluates the score of the hand.
+// isMax toggles the value of A to be either 1 or 11.
+// isBest calculates the best score by picking the best value for A.
 function evalHand(hand, isMax, isBest) {
 
     let sum = 0;
@@ -176,15 +176,24 @@ function evalHand(hand, isMax, isBest) {
 
 }
 
+// Check to see if the player's score exceeds 21.
 function isBust() {
 
     return evalHand(playerHand, false, false) > 21;
 
 }
 
+// Player is busted.
+function busted() {
+    document.getElementById("reset").disabled = false;
+    document.getElementsByClassName("symbol")[0].classList.toggle("scale");
+    document.getElementsByClassName("lose")[0].classList.toggle("show");
+}
+
+// Old function for choppy hand rendering.
 function renderHands(isOver) {
 
-    // House hand
+    // House hand.
     let hand = document.getElementById("house-cards");
     hand.innerHTML = "";
 
@@ -194,52 +203,55 @@ function renderHands(isOver) {
     if (isOver) {
 
         cardImg = document.createElement("img");
-        cardImg.src = "cards/back.png";
+        cardImg.src = "images/cards/back.png";
         hand.append(cardImg); 
 
         for (let i = 1; i < houseHand.length; i++) {
             cardImg = document.createElement("img");
-            cardImg.src = "cards/" + houseHand[i] + ".png";
+            cardImg.src = "images/cards/" + houseHand[i] + ".png";
             hand.append(cardImg);   
         }
         
     }
 
-    // Reveal the dealer's card since the game is over.
+    // Reveal the hidden card since the game is over.
     else {
 
         for (let i = 0; i < houseHand.length; i++) {
             cardImg = document.createElement("img");
-            cardImg.src = "cards/" + houseHand[i] + ".png";
+            cardImg.src = "images/cards/" + houseHand[i] + ".png";
             hand.append(cardImg);   
         }
 
     }
 
-    // The player's hand
+    // The player's hand.
     hand = document.getElementById("self-cards");
     hand.innerHTML = ""; 
     
     for (let i = 0; i < playerHand.length; i++) {
         cardImg = document.createElement("img");
-        cardImg.src = "cards/" + playerHand[i] + ".png";
+        cardImg.src = "images/cards/" + playerHand[i] + ".png";
         hand.append(cardImg);
     }
 
 }
 
+// Locks all buttons.
 function lock() {
     document.getElementById("draw").disabled = true;    
     document.getElementById("play").disabled = true;
     document.getElementById("reset").disabled = true;
 }
 
+// Unlocks all buttons.
 function unlock() {
     document.getElementById("draw").disabled = false;    
     document.getElementById("play").disabled = false;
     document.getElementById("reset").disabled = false;
 }
 
+// Draws a card.
 async function draw() {
 
     lock();
@@ -252,7 +264,7 @@ async function draw() {
 
     if (isBust()) {
         await delay(750);
-        endGame();
+        busted();
     }
     
     else {
@@ -261,16 +273,19 @@ async function draw() {
 
 }
 
+// Play your hand/end the game.
 function play() {
 
     endGame();
 
 }
 
+// End the game.
 async function endGame() {
 
     lock();
 
+    // House draw phase.
     let houseScore = evalHand(houseHand, true, true);
     let card;
     let wait = true;
@@ -283,89 +298,84 @@ async function endGame() {
         houseScore = evalHand(houseHand, true, true);
     }
     
+    // Determine the outcome of the game.
     let result;
     let playerScore = evalHand(playerHand, true, true);
 
-    if (playerScore > 21) {
-        result = "lose";
-    }
-
-    else if (houseScore > 21) {
+    // House is busted.
+    if (houseScore > 21) {
         result = "win";
     }
 
+    // Equal scores.
     else if (playerScore == houseScore) {
 
         if (playerScore == 21) {
 
+            // If player has blackjack.
             if (playerHand.length == 2) {
-                
+
+                // If the house has blackjack.
                 if (houseHand.length == 2) {
-
                     result = "tie";
-
                 }
-
                 else {
-
                     result = "win";
-
                 }
 
             }
 
             else {
 
+                // If the house has blackjack but not the player.
                 if (houseHand.length == 2) {
-
                     result = "lose";
-
                 }
-
+                // All other cases where both hands have a score of 21 but no one has blackjack.
                 else {
-
                     result = "win";
-
                 }
 
             }
-
         }
 
+        // Scores are equal but no one has blackjack.
         else {
             result = "tie";
         }
-        
     }
-
+    
+    //Player score is higher than house score.
     else if (playerScore > houseScore) {
-
         result = "win";
-
     }
 
+    //Player score is less than house score.
     else {
-
         result = "lose";
-
     }
 
     if (wait) {
         await delay(1000);
     }
 
+    //Don't make the player wait too long!
     else {
         await delay(250);
     }
 
     flipCard(hidden);
 
+    // Show the game result.
     await delay(1500);
     document.getElementById("reset").disabled = false;
-    document.getElementsByClassName("symbol")[0].classList.toggle("scale");
-    document.getElementsByClassName(result)[0].classList.toggle("show");
+    document.querySelector(".symbol-container").classList.toggle("scale");
+    document.querySelector('.' + result).classList.toggle("show");
 
 }
+
+
+
 
 
 
