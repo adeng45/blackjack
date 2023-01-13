@@ -75,7 +75,7 @@ html {
 /* Display winner. */
 .symbol-container {
     height: 80px;
-    width: 80px;
+    width: 120px;
     margin: 0 auto;
     transition: transform 0.25s cubic-bezier(0.87, 1.52, 0.86, 1.77);
 }
@@ -87,7 +87,7 @@ html {
 .symbol {
     position: absolute;
     height: 80px;
-    width: 80px;
+    width: 120px;
     display: none;
 }
 

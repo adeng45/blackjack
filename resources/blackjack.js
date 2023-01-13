@@ -29,9 +29,9 @@ async function newGame() {
     // Refresh the stage.
     document.getElementById("self-cards").innerHTML = "";
     document.getElementById("house-cards").innerHTML = "";
-    document.querySelector(".win").classList.remove("show");
-    document.querySelector(".tie").classList.remove("show");
-    document.querySelector(".lose").classList.remove("show");
+    document.getElementById("win").classList.remove("show");
+    document.getElementById("tie").classList.remove("show");
+    document.getElementById("lose").classList.remove("show");
     document.querySelector(".symbol-container").classList.add("scale");
 
     shuffleDeck();
@@ -186,8 +186,8 @@ function isBust() {
 // Player is busted.
 function busted() {
     document.getElementById("reset").disabled = false;
-    document.getElementsByClassName("symbol")[0].classList.toggle("scale");
-    document.getElementsByClassName("lose")[0].classList.toggle("show");
+    document.querySelector(".symbol-container").classList.toggle("scale");
+    document.getElementById("lose").classList.toggle("show");
 }
 
 // Old function for choppy hand rendering.
@@ -370,7 +370,7 @@ async function endGame() {
     await delay(1500);
     document.getElementById("reset").disabled = false;
     document.querySelector(".symbol-container").classList.toggle("scale");
-    document.querySelector('.' + result).classList.toggle("show");
+    document.getElementById(result).classList.toggle("show");
 
 }
 
